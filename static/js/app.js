@@ -32,6 +32,7 @@ function updatehistory(updateviews) {
   if (history && history.length > 0) {
     if (updateviews) {
       $.post("/status", {list: localStorage.getItem('history')}, (res) => {
+        localStorage.setItem('history', JSON.stringify(res))
         res.reverse()
         var entries = res.map(mapentries)
         renderTable(entries)
