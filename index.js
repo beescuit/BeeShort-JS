@@ -51,22 +51,16 @@ app.post('/short', async (req, res) => {
     }
 })
 
-async function generateURL(cback) {
-    var shorturl = Math.random().toString(36).substring(7)
-    var existing = await Url.findOne( { shorturl })
-    if (existing) {
-        generateURL(url => {
-            if (cback) {
-                cback(url)
-            }
-            return url
+async function generateURL() {
+    return new Promise((resolve, reject) => {
+        async.retry(async () => {
+            var shorturl = Math.random().toString(36).substring(7)
+            var existing = await Url.findOne( { shorturl })
+            return existing ? false : shorturl
+        }, (err, res) => {
+            err ? reject(err) : resolve(err)
         })
-    } else {
-        if (cback) {
-            cback(shorturl)
-        }
-        return shorturl
-    }
+    })
 }
 
 app.post('/status', (req, res) => {
