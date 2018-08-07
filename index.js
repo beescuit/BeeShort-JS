@@ -80,11 +80,7 @@ app.post('/status', (req, res) => {
 app.get('/:shorturl', (req, res) => {
     Url.findOneAndUpdate( { shorturl: req.params.shorturl }, {$inc: {clicks:1}}, (err, url) => {
         if (err) throw err
-        if (url) {
-            res.redirect(url.url)
-        } else {
-            res.redirect('/')
-        }
+        res.redirect(url ? url.url : '/')
     });
 })
 
