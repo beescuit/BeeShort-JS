@@ -68,13 +68,8 @@ app.post('/status', (req, res) => {
         var list = JSON.parse(req.body.list)
         async.map(list, (item, cback) => {
             Url.findOne( { shorturl: item.shorturl }, (err, dbentry) => {
-                if (dbentry) {
-                    item['clicks'] = dbentry.clicks
-                } else {
-                    item['clicks'] = 0
-                }
+                item['clicks'] = dbentry ? dbentry.clicks : 0
                 cback(null, item)
-                return item
             })
         }, (err, result) => {
             res.json(result)
