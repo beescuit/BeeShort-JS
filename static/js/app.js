@@ -31,15 +31,19 @@ function updatehistory(updateviews) {
   var history = JSON.parse(localStorage.getItem('history'))
   if (typeof history !== 'undefined' && history.length > 0) {
     if (updateviews) {
+      var preres = JSON.parse(localStorage.getItem('history'))
+      preres.reverse()
+      var preentries = preres.map(url => {return mapentries(url, true)})
+      renderTable(preentries)
       $.post("/status", {list: localStorage.getItem('history')}, (res) => {
         localStorage.setItem('history', JSON.stringify(res))
         res.reverse()
-        var entries = res.map(mapentries)
+        var entries = res.map(url => {return mapentries(url, false)})
         renderTable(entries)
       }, 'json')
     } else {
       history.reverse()
-      var entries = history.map(mapentries)
+      var entries = history.map(url => {return mapentries(url, false)})
       renderTable(entries)
     }
   }
@@ -47,8 +51,8 @@ function updatehistory(updateviews) {
 
 $(document).ready(updatehistory)
 
-function mapentries(url) {
-  return `<tr><td><p class="shorturl" data-clipboard-text="${window.location.href + url.shorturl}">${window.location.href + url.shorturl}</p></td><td><a href="${url.url}">${url.url}</a></td><td>${url.clicks||0} clicks.</td></tr>`
+function mapentries(url, loading) {
+  return `<tr><td><p class="shorturl" data-clipboard-text="${window.location.href + url.shorturl}">${window.location.href + url.shorturl}</p></td><td><a href="${url.url}">${url.url}</a></td><td>${loading ? '<div class="preloader-wrapper active" style="width: 25px;height: 25px;"><div class="spinner-layer spinner-blue-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>' : `${url.clicks||0} clicks`}</td></tr>`
 }
 
 function renderTable(entries) {
