@@ -58,7 +58,7 @@ async function generateURL() {
             var existing = await Url.findOne( { shorturl })
             return existing ? false : shorturl
         }, (err, res) => {
-            err ? reject(err) : resolve(err)
+            err ? reject(err) : resolve(res)
         })
     })
 }
