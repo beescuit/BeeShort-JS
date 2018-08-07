@@ -29,7 +29,7 @@ function short() {
 
 function updatehistory(updateviews) {
   var history = JSON.parse(localStorage.getItem('history'))
-  if (history && history.length > 0) {
+  if (typeof history !== 'undefined' && history.length > 0) {
     if (updateviews) {
       $.post("/status", {list: localStorage.getItem('history')}, (res) => {
         localStorage.setItem('history', JSON.stringify(res))
@@ -43,7 +43,6 @@ function updatehistory(updateviews) {
       renderTable(entries)
     }
   }
-  
 }
 
 $(document).ready(updatehistory)
