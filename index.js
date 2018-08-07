@@ -72,6 +72,7 @@ app.post('/status', (req, res) => {
                 cback(null, item)
             })
         }, (err, result) => {
+            if (err) throw err
             res.json(result)
         })
     }
