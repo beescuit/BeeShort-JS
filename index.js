@@ -26,32 +26,23 @@ app.get('/', (req, res) => {
 app.post('/short', async (req, res) => {
     var shorturl = false
     var iscustom = false
-    if (req.body.url && /http:\/\/|https:\/\//g.test(req.body.url)) {
-        if (!req.body.custom) {
-            shorturl = await generateURL()
-        } else {
-            if (!/[^a-zA-Z0-9]/g.test(req.body.custom)) {
-                var existing = await Url.findOne( { shorturl: req.body.custom })
-                if (!existing) {
-                    shorturl = req.body.custom
-                    iscustom = true
-                } else {
-                    res.json({sucess: false, err: "Custom url already taken"})
-                }
-            } else {
-                res.json({sucess: false, err: "Invalid custom url"})
-            }
-        }
-        if (shorturl) {
-            const data = { url: req.body.url, shorturl, iscustom }
-            new Url(data).save().then(() => {res.json({sucess: true, data})}).catch(() => {res.json({sucess: false, err: "Error saving to database."})})
-        }
+    if (!req.body.url) return res.json({sucess: false, err: "No url provided"})
+    if (!/http:\/\/|https:\/\//g.test(req.body.url)) return res.json({sucess: false, err: "Invalid url"})
+    if (req.body.custom) {
+        if (/[^a-zA-Z0-9]/g.test(req.body.custom)) return res.json({sucess: false, err: "Invalid custom url"})
+        var existing = await Url.findOne( { shorturl: req.body.custom })
+        if (existing) return res.json({sucess: false, err: "Custom url already taken"})
+        shorturl = req.body.custom
+        iscustom = true
     } else {
-        res.json({sucess: false, err: "Invalid url"})
+        shorturl = await generateURL()
     }
+    const data = { url: req.body.url, shorturl, iscustom }
+    new Url(data).save().then(() => {res.json({sucess: true, data})}).catch(() => {res.json({sucess: false, err: "Error saving to database."})})
 })
 
-async function generateURL() {
+function generateURL() {
+    // TODO: find a way to do this without the async package
     return new Promise((resolve, reject) => {
         async.retry(async () => {
             var shorturl = Math.random().toString(36).substring(7)
@@ -63,26 +54,21 @@ async function generateURL() {
     })
 }
 
-app.post('/status', (req, res) => {
+app.post('/status', async (req, res) => {
     if (req.body.list) {
         var list = JSON.parse(req.body.list)
-        async.map(list, (item, cback) => {
-            Url.findOne( { shorturl: item.shorturl }, (err, dbentry) => {
-                item['clicks'] = dbentry ? dbentry.clicks : 0
-                cback(null, item)
-            })
-        }, (err, result) => {
-            if (err) throw err
-            res.json(result)
-        })
+        var result = await Promise.all(list.map(async item => {
+            var dbentry = await Url.findOne({ shorturl: item.shorturl })
+            item['clicks'] = dbentry ? dbentry.clicks : 0
+            return item
+        }))
+        res.json(result)
     }
 })
 
-app.get('/:shorturl', (req, res) => {
-    Url.findOneAndUpdate( { shorturl: req.params.shorturl }, {$inc: {clicks:1}}, (err, url) => {
-        if (err) throw err
-        res.redirect(url ? url.url : '/')
-    });
+app.get('/:shorturl', async (req, res) => {
+    var url = await Url.findOneAndUpdate( { shorturl: req.params.shorturl }, {$inc: { clicks:1 } } )
+    res.redirect(url ? url.url : '/')
 })
 
 app.listen(config.port, () => { console.log(`Listening on port ${config.port}`) })
