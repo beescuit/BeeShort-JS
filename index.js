@@ -1,9 +1,8 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const config = require('./config.json')
 const mongoose = require('mongoose')
-const async = require('async')
+const config = require('./config.json')
 
 mongoose.connect(config.db, { useNewUrlParser: true })
 
@@ -42,15 +41,10 @@ app.post('/short', async (req, res) => {
 })
 
 function generateURL() {
-    // TODO: find a way to do this without the async package
-    return new Promise((resolve, reject) => {
-        async.retry(async () => {
-            var shorturl = Math.random().toString(36).substring(7)
-            var existing = await Url.findOne( { shorturl })
-            return existing ? false : shorturl
-        }, (err, res) => {
-            err ? reject(err) : resolve(res)
-        })
+    return new Promise(async (resolve, reject) => {
+        var shorturl = Math.random().toString(36).substring(7)
+        var existing = await Url.findOne( { shorturl })
+        resolve(existing ? await generateURL() : shorturl)
     })
 }
 
