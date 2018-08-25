@@ -1,5 +1,5 @@
 {
     "port": 80,
     "pagetitle": "BeeShort - URL Shortener",
-    "db": "mongodb://test:testee1@ds023418.mlab.com:23418/beeshort-js"
+    "db": "mongodb://x@x/x"
 }
