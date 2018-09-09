@@ -4,14 +4,36 @@
   "description": "A simple url shortener",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server --mode development --open --hot",
+    "build": "webpack --mode production"
   },
   "author": "BeeCoding",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@material-ui/core": "^3.0.2",
+    "@material-ui/icons": "^3.0.1",
+    "axios": "^0.18.0",
+    "babel-loader": "^8.0.2",
     "body-parser": "^1.18.3",
+    "css-loader": "^1.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
-    "mongoose": "^5.2.5"
+    "html-webpack-plugin": "^3.2.0",
+    "mongoose": "^5.2.5",
+    "node-sass": "^4.9.3",
+    "react": "^16.5.0",
+    "react-clipboard.js": "^2.0.0",
+    "react-dom": "^16.5.0",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0",
+    "url-loader": "^1.1.1",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.8"
   }
 }
