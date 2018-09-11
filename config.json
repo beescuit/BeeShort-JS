@@ -1,5 +1,0 @@
-{
-    "port": 80,
-    "pagetitle": "BeeShort - URL Shortener",
-    "db": "mongodb://x@x/x"
-}

@@ -1,6 +1,7 @@
+require('dotenv').config()
+
 const path = require('path')
 const HtmlWebpack = require('html-webpack-plugin')
-const config = require('./config.json')
 
 module.exports = {
   entry: './web/src/index.js',
@@ -31,7 +32,7 @@ module.exports = {
     new HtmlWebpack({
       template: './web/src/index.ejs',
       templateParameters: {
-        title: config.pagetitle
+        title: process.env.PAGE_TITLE
       }
     })
   ]

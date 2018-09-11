@@ -1,10 +1,11 @@
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const config = require('./config.json')
 
-mongoose.connect(config.db, { useNewUrlParser: true })
+mongoose.connect(process.env.DBURI, { useNewUrlParser: true })
 
 const Url = mongoose.model('Url', {
   url: String,
@@ -64,4 +65,4 @@ app.get('/:shorturl', async (req, res) => {
   res.redirect(url ? url.url : '/')
 })
 
-app.listen(config.port, () => { console.log(`Listening on port ${config.port}`) })
+app.listen(process.env.PORT, () => { console.log(`Listening on port ${process.env.PORT}`) })
