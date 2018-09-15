@@ -4,6 +4,7 @@ O projeto original foi reescrito do zero em JavaScript durante uma live na [minh
 Meu objetivo com isso tudo foi mostrar que após 2 anos, consigo fazer um projeto bem mais decente em relativamente pouco tempo (esse demorou 4 horas e meia segundo a twitch)
 #### Diferenças do projeto original:
 - Uso do javascript no back end (nodejs / express e outras packages)
+- Uso de reactJS no front end
 - Uso da database mongodb em vez do SQL
 - Tabela de historico de links gerada no client side
 - Armazenamento do historico no localStorage em vez de usar uma Session do PHP
